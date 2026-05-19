@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr" ng-app="Metasoft">
+<head>
+	<meta charset="UTF-8">
+	<title>Registro</title>
+    <link href="css/Login_Registro.css" rel="stylesheet" type="text/css">
+    
+    <!---->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> 
+    <!-- -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.7.9/angular-route.min.js"></script>
+
+    <!----> 
+    <script  src="../Clases/usuario.js"></script> 
+    <script  src="../Logica/Registrar.js"></script>
+    
+</head>  
+<body ng-controller="Registrar">
+    <!--  -->
+<h1 style="background-color: #A01BC4; margin: 0px; padding: 20px; color: #FFF">Metasoft</h1>
+
+<div class="contenedor">
+
+     <form class="formulario">  
+
+     <h1>Registrate</h1>
+
+         <div class="input-contenedor">      
+         <input class="input-text" type="text" placeholder="Documento" ng-model="documento">        
+         </div>
+     
+         <div class="input-contenedor">
+         <input class="input-text" type="text" placeholder="Nombre Completo" ng-model="nombre">   
+         </div>
+
+         <div class="input-contenedor">        
+         <input class="input-text" type="text" placeholder="Correo Unal Sin: '@unal.edu.co'" ng-model="correo">       
+         </div>
+<!---->
+         <div class="input-contenedor">      
+         <input class="input-text" type="text" placeholder="Sede" ng-model="sed3">        
+         </div> 
+
+         <div class="input-contenedor"  ng-init="Ver_sedes()">  
+         <select ng-model="sede" ng-options = "sede.coddep as sede.desdep for sede in sedes" ></select>
+ <!---->       
+         </div>
+
+         <div class="input-contenedor">      
+         <input class="input-text" type="text" placeholder="Carrera 1" ng-model="carrera_1">        
+         </div> 
+
+         <div class="input-contenedor">      
+         <input class="input-text" type="text" placeholder="Carrera 2" ng-model="carrera_2">        
+         </div> 
+
+         <div class="input-contenedor">      
+         <input class="input-text" type="password" placeholder="Contraseña" ng-model="password">        
+         </div>
+                 
+         <button class="button" ng-click="Guardar()" >Registrate</button>
+
+         <p>Al registrarte, aceptas nuestras Condiciones de uso y Política de privacidad.</p>
+         <p>¿Ya tienes una cuenta? <br> <a class="link" href="login.html"> Iniciar Sesion</a></p> 
+
+     </form>
+ </div>
+   
+</body>
+</html>

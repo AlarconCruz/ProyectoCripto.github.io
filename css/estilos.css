@@ -1,0 +1,354 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blanco: #fff;
+  --negro: #000;
+  --titulo: #656565;
+  --hover: #9e9797;
+  --fondo1: #bc4e9c;
+  --fondo2: #1f1f3c;
+}
+
+body {
+  font-family: "open sans";
+}
+
+.contenedor {
+  padding: 60px 0;
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.titulo {
+  color: var(--titulo);
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+/* Header */
+
+header {
+  width: 100%;
+  height: 600px;
+  background: var(--titulo);
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+      to right,
+      hsla(0, 0%, 73%, 0.226),
+      hsla(0, 0%, 23%, 0.664)
+    ),
+    url(../img/inicio.jpg);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+      to right,
+      hsla(0, 0%, 73%, 0.226),
+      hsla(0, 0%, 23%, 0.664)
+    ),
+    url(../img/inicio.jpg);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* decoracion de la onda */
+
+.wave {
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 1; /* esto le da una posicion al vector svg en el eje z, se va usar para que quede atras del menu despegable */
+}
+
+.onda {
+  width: 100%;
+}
+
+/* menu de navegacion */
+
+nav {
+  width: 100%;
+}
+
+nav ul {
+  float: right;
+  margin-right: 20px;
+}
+
+nav ul li {
+  display: inline-block;
+  line-height: 80px;
+  margin: 0 5px;
+}
+
+nav ul li a {
+  color: var(--blanco);
+  font-size: 18px;
+  padding: 7px 13px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+nav > ul li a:hover {
+  background: var(--hover);
+  transition: 0.5s;
+  text-decoration: underline;
+}
+
+.checkbtn {
+  font-size: 30px;
+  color: var(--blanco);
+  float: right;
+  line-height: 80px;
+  margin-right: 40px;
+  cursor: pointer;
+  display: none;
+}
+#check {
+  display: none;
+}
+
+/* header */
+
+header .textos-header {
+  display: flex;
+  height: 430px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.textos-header h1 {
+  -webkit-text-stroke: 1px var(--negro);
+  font-size: 50px;
+  color: var(--blanco);
+}
+
+.textos-header h2 {
+  -webkit-text-stroke: 0.2px var(--negro);
+  font-size: 30px;
+  width: 50%;
+  font-weight: 300;
+  color: var(--blanco);
+}
+
+/* About us */
+
+main .sobre-nosotros {
+  padding: 30px 0 60px 0;
+}
+.contenedor-sobre-nosotros {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.imagen-about-us {
+  width: 48%;
+}
+
+.sobre-nosotros .contenido-textos {
+  width: 48%;
+}
+
+.contenido-textos h3 {
+  margin-bottom: 15px;
+}
+
+.contenido-textos h3 span {
+  background: #565656;
+  color: var(--blanco);
+  border-radius: 50%;
+  display: inline-block;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.5);
+  margin-right: 5px;
+}
+
+.contenido-textos p {
+  padding: 0px 0px 30px 15px;
+  font-weight: 300;
+  text-align: justify;
+}
+
+/* Contenedor del Texto */
+#texto-recuadro {
+  background: #fff;
+  padding: 50px;
+  margin-top: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/*  Our team */
+
+.about-services {
+  background: #f2f2f2;
+  padding-bottom: 30px;
+}
+
+.servicio-cont {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.servicio-ind {
+  width: 28%;
+  text-align: center;
+}
+
+.servicio-ind img {
+  width: 90%;
+}
+
+.servicio-ind h3 {
+  margin: 10px 0;
+}
+
+/* footer */
+
+footer {
+  background: #414141;
+  padding: 60px 0 30px 0;
+  margin: auto;
+  overflow: hidden;
+}
+
+.titulo-final {
+  text-align: center;
+  font-size: 24px;
+  margin: 20px 0 0 0;
+  color: #9e9797;
+}
+
+/* @media only screen and (max-width:...)  */
+
+/* pantallas de escritorio (> 1200) */
+
+/* No es necesario ya que la mayoria de los tamaños estan en % lo cual facilita que se adapte a las pantallas >1200 pixeles */
+
+@media screen and (max-width: 900px) {
+  /* tableta o portátil sencillo (800 - 1200): se tomo 900px como punto medio de estas medidas */
+  header {
+    background-position: center;
+  }
+
+  nav ul {
+    float: none;
+    text-align: center;
+  }
+
+  nav ul li a {
+    font-size: 15px;
+  }
+
+  .contenedor-sobre-nosotros {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .sobre-nosotros .contenido-textos {
+    width: 90%;
+  }
+
+  .imagen-about-us {
+    width: 90%;
+  }
+
+  /* servicios */
+
+  .servicio-cont {
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .servicio-ind {
+    width: 100%;
+    text-align: center;
+  }
+
+  .servicio-ind:nth-child(1),
+  .servicio-ind:nth-child(2) {
+    margin-bottom: 60px;
+  }
+
+  .servicio-ind img {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  /* teléfono celular en sentido vertical (<800) */
+
+  header .textos-header {
+    height: 300px;
+  }
+
+  .textos-header h1 {
+    font-size: 35px;
+  }
+
+  .textos-header h2 {
+    font-size: 20px;
+  }
+
+  /* ABOUT US */
+
+  .imagen-about-us {
+    margin-bottom: 60px;
+    width: 99%;
+  }
+
+  .sobre-nosotros .contenido-textos {
+    width: 95%;
+  }
+
+  /* Footer */
+
+  .titulo-final {
+    font-size: 20px;
+  }
+
+  /* Menu desplegable */
+
+  .checkbtn {
+    display: block;
+  }
+  ul {
+    position: fixed;
+    width: 100%;
+    background: #2c3e50;
+    top: 85px;
+    left: -100%;
+    text-align: center;
+    transition: all 0.5s;
+    z-index: 2; /* esto hace que este por encima del vecto svg en el eje z */
+  }
+  nav ul li {
+    display: block;
+    margin: 20px 0;
+    line-height: 30px;
+  }
+  nav ul li a {
+    font-size: 20px;
+  }
+
+  #check:checked ~ ul {
+    left: 0;
+  }
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>La Segunda Guerra Mundial</title> <!-- titulo -->
+    <link rel="shortcut icon" href="img/union.png" type="image/x-icon"> <!-- icono de la pestaña del navegador -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+    <!-- icono del menu de navegacion -->
+    <link rel="stylesheet" href="css/estilos.css"> <!-- coneccion con los estilos -->
+    <link rel="stylesheet" href="css/estilo_mapa.css"> <!-- coneccion con los estilos -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800&display=swap" rel="stylesheet"> <!-- Fuente del texto: Open Sans -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /> <!-- se requiere para que el mapa funcione bien -->
+    
+</head>
+
+<body>
+    <header>
+
+        <!-- Menu de navegacion-->
+
+        <nav>
+
+            <input type="checkbox" id="check">
+
+            <label for="check" class="checkbtn">
+                <i class="fas fa-bars"></i>
+            </label>
+
+            <ul>
+                <li><a href="index.html">Introducción</a></li>
+                <li><a href="ubicación.html">Ubicación</a></li>
+                <li><a href="personajes.html">Personajes</a></li>
+                <li><a href="actividades.html">Actividades</a></li>
+                <li><a href="historia.html">Historia</a></li>
+                <li><a href="mapa.html">Mapa interactivo</a></li>
+                <li><a href="creditos.html">Créditos</a></li>
+            </ul>
+        </nav>
+
+        <!-- texto del encabezado -->
+
+        <section class="textos-header">
+            <h1>La Segunda Guerra Mundial</h1>
+            <h2>Un conflicto que marcó el siglo XX, se convirtió en el escenario de la confrontación más significativa
+                de la historia. </h2>
+        </section>
+
+        <div class="wave">
+            <!--esto ayuda hacer la forma ondulada -->
+            <!--  -->
+            <img src="img/onda.svg" alt="" class="onda" />
+        </div>
+
+    </header>
+
+    <!-- mapa del proyecto -->
+    <div id="texto-recuadro">
+
+        <h2>Paise donde incio la segunda guerra mundial</h2>
+        <!-- Insertamos el mapa -->
+        <div id="map"></div>
+
+    </div>
+
+    </main>
+    <!-- parte final -->
+    <footer>
+        <h2 class="titulo-final"> Sus héroes y villanos | Sus batallas épicas y sus tragedias </h2>
+    </footer>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="./javascript/datos.js"></script>
+    <script src="./javascript/paises.js"></script>
+</body>
+
+</html>
+
+<!--
+    
+    El diseño de este proyecto mio (se usaron varios tutoriales en youtube para llegar a este punto) es de una plantilla de un proyecto anterior que fue reutilizado, es por eso que los css mantienen esa forma
+
+    Creditos del autor del trabajo: Oscar Daniel Sanabria Daza
+
+-->

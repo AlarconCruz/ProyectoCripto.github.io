@@ -1,0 +1,28 @@
+/* Contenedor del mapa */
+#map {
+    height: 600px;
+    width: 100%;
+    border: 2px solid #ddd;
+    background-color: #8cc4e9ad;
+}
+
+/* Contenido del popup del marcador */
+.leaflet-popup-content-wrapper {
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Tooltip */
+.leaflet-tooltip {
+    background-color: #000;
+    color: #fff;
+}
+
+/* Controles del mapa */
+.leaflet-control-zoom,
+.leaflet-control-layers {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+}

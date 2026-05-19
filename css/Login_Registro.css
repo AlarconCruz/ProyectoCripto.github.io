@@ -11,6 +11,16 @@ body {
   box-sizing: border-box;
 }
 
+:root {
+  --blanco: #fff;
+  --negro: #000;
+  --titulo: #656565;
+  --hover: #9e9797;
+  --colorButton: #9e9797;
+  --buttonHover: #656565;
+}
+
+
 .contenedor{
     width: 100%; 
     padding-bottom: 30px;
@@ -19,7 +29,7 @@ body {
 .formulario{
     background: #FFF;
     padding: 3px;
-    border: 3px solid #A01BC4;
+    border: 3px solid var(--titulo);
 }
 
 h1{
@@ -31,7 +41,7 @@ h1{
 input[type="text"],
 input[type="password"]{
     border-radius: 10px;
-    border: 1px solid #A9A9A9;
+    border: 1px solid var(--titulo);
     font-size: 20px;
     width: 90%;
     padding: 10px;   
@@ -48,27 +58,37 @@ input[type="password"]{
     margin-left: 10%;
     color: white;
     font-size: 20px;
-    background:  #A01BC4;
+    background:  var(--colorButton);
     padding: 15px 20px;
     border-radius: 5px;
     cursor: pointer;
 }
 .button:hover{
-    background: cadetblue;
+    background: var(--buttonHover);
 }
 
 p{
     text-align: center;
 }
 
+.inicio{
+    text-decoration: none;
+    color: var(--blanco);
+    font-weight: 600;
+}
+
+.inicio:hover{
+     color: var(--hover);
+}
+
 .link{
     text-decoration: none;
-    color: #1a2537;
+    color: var(--titulo);
     font-weight: 600;
 }
 
 .link:hover{
-     color: cadetblue;
+     color: var(--buttonHover);
 }
 
 @media(min-width:768px)

@@ -1,76 +1,186 @@
 <!DOCTYPE html>
-<html lang="es" dir="ltr" ng-app="Metasoft">
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<!-- titulo -->
-	<title>La Segunda Guerra Mundial</title>
-    <!-- icono de la pestaña del navegador -->
+    <meta charset="UTF-8">
+    <title>La Segunda Guerra Mundial — Registro</title>
     <link rel="shortcut icon" href="img/union.png" type="image/x-icon" />
     <link href="css/Login_Registro.css" rel="stylesheet" type="text/css">
-    
-    <!---->
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script> 
-    <!-- -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
-    <script src="https://code.angularjs.org/1.7.9/angular-route.min.js"></script>
-
-    <!--
-    <script  src="../Clases/usuario.js"></script> 
-    <script  src="../Logica/Registrar.js"></script>
-    --> 
-</head>  
-<body ng-controller="Registrar">
-    <!--  -->
+    <!-- RNF 1: Google reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        .error-msg {
+            color: #c0392b;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+            margin-left: 10%;
+        }
+        .exito-msg {
+            color: #27ae60;
+            font-size: 15px;
+            text-align: center;
+            display: none;
+            padding: 8px;
+            border: 1px solid #27ae60;
+            border-radius: 5px;
+            margin: 10px 10%;
+            background: #eafaf1;
+        }
+        .captcha-contenedor {
+            margin-bottom: 15px;
+            margin-left: 10%;
+        }
+        .password-hint {
+            font-size: 12px;
+            color: #777;
+            margin-left: 10%;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .seguridad-badge {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 6px;
+        }
+        .seguridad-badge span {
+            background: #f0f0f0;
+            border-radius: 4px;
+            padding: 2px 7px;
+            margin: 2px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
     <h1 style="background-color: var(--titulo); margin: 0px; padding: 20px; color: #FFF">
         <a class="inicio" href="index.html">La Segunda Guerra Mundial</a>
     </h1>
 
-<div class="contenedor">
+    <div class="contenedor">
+        <div class="formulario">
+            <h1>Regístrate</h1>
 
-     <form class="formulario">  
+            <!-- Campo: Correo -->
+            <div class="input-contenedor">
+                <input class="input-text" type="text" id="correo"
+                       placeholder="Usuario UNAL (sin @unal.edu.co)"
+                       maxlength="60" autocomplete="off">
+            </div>
+            <p class="error-msg" id="error-correo"></p>
 
-     <h1>Registrate</h1>
+            <!-- Campo: Contraseña -->
+            <div class="input-contenedor">
+                <input class="input-text" type="password" id="password"
+                       placeholder="Contraseña" maxlength="64" autocomplete="new-password">
+            </div>
+            <p class="password-hint">Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo (p. ej. !@#$)</p>
+            <p class="error-msg" id="error-password"></p>
 
-         <div class="input-contenedor">      
-         <input class="input-text" type="text" placeholder="Documento" ng-model="documento">        
-         </div>
-     
-         <div class="input-contenedor">
-         <input class="input-text" type="text" placeholder="Nombre Completo" ng-model="nombre">   
-         </div>
+            <!-- Campo: Confirmar contraseña -->
+            <div class="input-contenedor">
+                <input class="input-text" type="password" id="password2"
+                       placeholder="Confirmar contraseña" maxlength="64">
+            </div>
+            <p class="error-msg" id="error-password2"></p>
 
-         <div class="input-contenedor">        
-         <input class="input-text" type="text" placeholder="Correo Unal Sin: '@unal.edu.co'" ng-model="correo">       
-         </div>
-<!---->
-         <div class="input-contenedor">      
-         <input class="input-text" type="text" placeholder="Sede" ng-model="sed3">        
-         </div> 
+            <!-- RNF 1: CAPTCHA -->
+            <div class="captcha-contenedor">
+                <div class="g-recaptcha"
+                     data-sitekey="6LdWmv0sAAAAAFek5m48VWCggiTQG_uUd63Su-uv">
+                </div>
+            </div>
+            <p class="error-msg" id="error-captcha"></p>
 
-         <div class="input-contenedor"  ng-init="Ver_sedes()">  
-         <select ng-model="sede" ng-options = "sede.coddep as sede.desdep for sede in sedes" ></select>
- <!---->       
-         </div>
+            <!-- Mensaje de éxito -->
+            <p class="exito-msg" id="msg-exito"></p>
 
-         <div class="input-contenedor">      
-         <input class="input-text" type="text" placeholder="Carrera 1" ng-model="carrera_1">        
-         </div> 
+            <button class="button" id="btn-registrar" onclick="handleRegistro()">
+                Regístrate
+            </button>
 
-         <div class="input-contenedor">      
-         <input class="input-text" type="text" placeholder="Carrera 2" ng-model="carrera_2">        
-         </div> 
+            <!-- Indicadores de seguridad aplicados -->
+            <div class="seguridad-badge">
+                <span>🔒 SHA-256</span>
+                <span>🛡 Sanitización XSS</span>
+                <span>🤖 reCAPTCHA</span>
+            </div>
 
-         <div class="input-contenedor">      
-         <input class="input-text" type="password" placeholder="Contraseña" ng-model="password">        
-         </div>
-                 
-         <button class="button" ng-click="Guardar()" >Registrate</button>
+            <p>Al registrarte aceptas nuestras Condiciones de uso y Política de privacidad.</p>
+            <p>¿Ya tienes cuenta? <a class="link" href="login.html">Iniciar sesión</a></p>
+        </div>
+    </div>
 
-         <p>Al registrarte, aceptas nuestras Condiciones de uso y Política de privacidad.</p>
-         <p>¿Ya tienes una cuenta? <br> <a class="link" href="login.html"> Iniciar Sesion</a></p> 
+    <!-- RNF 2, 3: Lógica de auth compartida -->
+    <script src="javascript/auth.js"></script>
+    <script>
+        async function handleRegistro() {
+            // Limpiar errores previos
+            ['error-correo', 'error-password', 'error-password2', 'error-captcha', 'msg-exito']
+                .forEach(id => {
+                    const el = document.getElementById(id);
+                    el.style.display = 'none';
+                    el.textContent = '';
+                });
 
-     </form>
- </div>
-   
+            const correo   = document.getElementById('correo').value.trim();
+            const password = document.getElementById('password').value;
+            const password2 = document.getElementById('password2').value;
+
+            let hayError = false;
+
+            // RNF 3: Validaciones del lado cliente
+            if (!correo) {
+                mostrarError('error-correo', 'El correo es obligatorio.');
+                hayError = true;
+            } else if (!validarCorreo(correo)) {
+                mostrarError('error-correo', 'Correo inválido. Usa tu usuario UNAL (con o sin @unal.edu.co).');
+                hayError = true;
+            }
+
+            if (!password) {
+                mostrarError('error-password', 'La contraseña es obligatoria.');
+                hayError = true;
+            } else if (!validarPassword(password)) {
+                mostrarError('error-password', 'Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo especial.');
+                hayError = true;
+            }
+
+            if (password !== password2) {
+                mostrarError('error-password2', 'Las contraseñas no coinciden.');
+                hayError = true;
+            }
+
+            // RNF 1: Verificar CAPTCHA
+            const captchaResponse = grecaptcha.getResponse();
+            if (!captchaResponse) {
+                mostrarError('error-captcha', 'Por favor completa el CAPTCHA.');
+                hayError = true;
+            }
+
+            if (hayError) return;
+
+            // RNF 2 + 3: Registrar con hash y sanitización
+            const btn = document.getElementById('btn-registrar');
+            btn.disabled = true;
+            btn.textContent = 'Registrando...';
+
+            const resultado = await registrarUsuario(correo, password);
+
+            btn.disabled = false;
+            btn.textContent = 'Regístrate';
+            grecaptcha.reset();
+
+            if (resultado.ok) {
+                const exito = document.getElementById('msg-exito');
+                exito.textContent = resultado.msg;
+                exito.style.display = 'block';
+                // Redirigir al login después de 2 segundos
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+            } else {
+                mostrarError('error-correo', resultado.msg);
+            }
+        }
+    </script>
 </body>
 </html>

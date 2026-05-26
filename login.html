@@ -1,32 +1,220 @@
 <!DOCTYPE html>
-<html lang="es" dir="ltr" ng-app="Metasoft">
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-    <!-- titulo -->
-	<title>La Segunda Guerra Mundial</title>
-    <!-- icono de la pestaña del navegador -->
+    <meta charset="UTF-8">
+    <title>La Segunda Guerra Mundial — Login</title>
     <link rel="shortcut icon" href="img/union.png" type="image/x-icon" />
-	<link href="css/Login_Registro.css" rel="stylesheet" type="text/css">
-</head>  
+    <link href="css/Login_Registro.css" rel="stylesheet" type="text/css">
+    <style>
+        .error-msg {
+            color: #c0392b;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+            margin-left: 10%;
+        }
+        .exito-msg {
+            color: #27ae60;
+            font-size: 15px;
+            text-align: center;
+            display: none;
+            padding: 8px;
+            border: 1px solid #27ae60;
+            border-radius: 5px;
+            margin: 10px 10%;
+            background: #eafaf1;
+        }
+        .bloqueo-msg {
+            color: #c0392b;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            padding: 10px;
+            border: 1px solid #c0392b;
+            border-radius: 5px;
+            margin: 10px 10%;
+            background: #fdf2f2;
+            font-weight: bold;
+        }
+        .intentos-msg {
+            color: #e67e22;
+            font-size: 13px;
+            text-align: center;
+            margin: 5px 0;
+        }
+        .seguridad-badge {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 6px;
+        }
+        .seguridad-badge span {
+            background: #f0f0f0;
+            border-radius: 4px;
+            padding: 2px 7px;
+            margin: 2px;
+            display: inline-block;
+        }
+        #contador-bloqueo {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
     <h1 style="background-color: var(--titulo); margin: 0px; padding: 20px; color: #FFF">
         <a class="inicio" href="index.html">La Segunda Guerra Mundial</a>
     </h1>
-<div class="contenedor">   
-    <form class="formulario">
-    <h1>Login</h1>           
-         <div class="input-contenedor">
-         <input class="input-text" type="text" placeholder="Correo Unal">
-         
-         </div>
-         
-         <div class="input-contenedor">
-         <input class="input-text" type="password" placeholder="Contraseña">
-         </div>
-         <button class="button" >Login</button>
-         <p>Al registrarte, aceptas nuestras Condiciones de uso y Política de privacidad.</p>
-         <p>¿No tienes una cuenta? <br> <a class="link" href="registro.html">Registrate </a></p>
-    </form>
-</div>
+
+    <div class="contenedor">
+        <div class="formulario">
+            <h1>Iniciar sesión</h1>
+
+            <!-- Aviso de bloqueo -->
+            <div class="bloqueo-msg" id="msg-bloqueo">
+                🔒 Cuenta bloqueada.<br>
+                Intenta de nuevo en <span id="contador-bloqueo">120</span> segundos.
+            </div>
+
+            <!-- Campo: Correo -->
+            <div class="input-contenedor">
+                <input class="input-text" type="text" id="correo"
+                       placeholder="Usuario UNAL (sin @unal.edu.co)"
+                       maxlength="60" autocomplete="off">
+            </div>
+            <p class="error-msg" id="error-correo"></p>
+
+            <!-- Campo: Contraseña -->
+            <div class="input-contenedor">
+                <input class="input-text" type="password" id="password"
+                       placeholder="Contraseña" maxlength="64">
+            </div>
+            <p class="error-msg" id="error-password"></p>
+
+            <!-- Mensaje de error general / intentos -->
+            <p class="error-msg" id="error-general"></p>
+
+            <!-- Mensaje de éxito -->
+            <p class="exito-msg" id="msg-exito"></p>
+
+            <button class="button" id="btn-login" onclick="handleLogin()">
+                Iniciar sesión
+            </button>
+
+            <!-- Indicadores de seguridad -->
+            <div class="seguridad-badge">
+                <span>🔒 SHA-256</span>
+                <span>🛡 Sanitización XSS</span>
+                <span>⛔ Anti fuerza bruta</span>
+            </div>
+
+            <p>Al iniciar sesión aceptas nuestras Condiciones de uso y Política de privacidad.</p>
+            <p>¿No tienes cuenta? <a class="link" href="registro.html">Regístrate</a></p>
+        </div>
+    </div>
+
+    <!-- RNF 2, 3, 4: Lógica de auth compartida -->
+    <script src="javascript/auth.js"></script>
+    <script>
+        let intervaloBloqueo = null;
+
+        // Verificar bloqueo al cargar la página
+        window.addEventListener('load', function () {
+            verificarEstadoBloqueo();
+        });
+
+        function verificarEstadoBloqueo() {
+            if (estaBloqueado()) {
+                mostrarPantallaBloqueo();
+            }
+        }
+
+        function mostrarPantallaBloqueo() {
+            const msgBloqueo = document.getElementById('msg-bloqueo');
+            const btn = document.getElementById('btn-login');
+            const inputs = document.querySelectorAll('.input-text');
+
+            msgBloqueo.style.display = 'block';
+            btn.disabled = true;
+            inputs.forEach(i => i.disabled = true);
+
+            actualizarContador();
+            if (intervaloBloqueo) clearInterval(intervaloBloqueo);
+            intervaloBloqueo = setInterval(function () {
+                if (!estaBloqueado()) {
+                    clearInterval(intervaloBloqueo);
+                    desbloquearFormulario();
+                } else {
+                    actualizarContador();
+                }
+            }, 1000);
+        }
+
+        function actualizarContador() {
+            const seg = tiempoRestanteBloqueoBloqueado();
+            document.getElementById('contador-bloqueo').textContent = seg;
+        }
+
+        function desbloquearFormulario() {
+            const msgBloqueo = document.getElementById('msg-bloqueo');
+            const btn = document.getElementById('btn-login');
+            const inputs = document.querySelectorAll('.input-text');
+
+            msgBloqueo.style.display = 'none';
+            btn.disabled = false;
+            inputs.forEach(i => i.disabled = false);
+        }
+
+        async function handleLogin() {
+            // Limpiar mensajes previos
+            ['error-correo', 'error-password', 'error-general', 'msg-exito'].forEach(id => {
+                const el = document.getElementById(id);
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            // RNF 4: Verificar bloqueo antes de procesar
+            if (estaBloqueado()) {
+                mostrarPantallaBloqueo();
+                return;
+            }
+
+            const correo   = document.getElementById('correo').value.trim();
+            const password = document.getElementById('password').value;
+
+            // RNF 3: Validación básica de campos vacíos
+            let hayError = false;
+            if (!correo) {
+                mostrarError('error-correo', 'El correo es obligatorio.');
+                hayError = true;
+            }
+            if (!password) {
+                mostrarError('error-password', 'La contraseña es obligatoria.');
+                hayError = true;
+            }
+            if (hayError) return;
+
+            const btn = document.getElementById('btn-login');
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
+
+            // RNF 2 + 3 + 4: Login seguro
+            const resultado = await loginUsuario(correo, password);
+
+            btn.disabled = false;
+            btn.textContent = 'Iniciar sesión';
+
+            if (resultado.ok) {
+                const exito = document.getElementById('msg-exito');
+                exito.textContent = '¡Bienvenido! Redirigiendo...';
+                exito.style.display = 'block';
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } else if (resultado.bloqueado) {
+                mostrarPantallaBloqueo();
+            } else {
+                mostrarError('error-general', resultado.msg);
+            }
+        }
+    </script>
 </body>
 </html>

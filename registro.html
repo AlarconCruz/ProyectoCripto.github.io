@@ -5,7 +5,6 @@
     <title>La Segunda Guerra Mundial — Registro</title>
     <link rel="shortcut icon" href="img/union.png" type="image/x-icon" />
     <link href="css/Login_Registro.css" rel="stylesheet" type="text/css">
-    <!-- RNF 1: Google reCAPTCHA v2 -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         .error-msg {
@@ -27,8 +26,7 @@
             background: #eafaf1;
         }
         .captcha-contenedor {
-            margin-bottom: 15px;
-            margin-left: 10%;
+            margin: 0 0 15px 10%;
         }
         .password-hint {
             font-size: 12px;
@@ -36,19 +34,6 @@
             margin-left: 10%;
             margin-top: -10px;
             margin-bottom: 10px;
-        }
-        .seguridad-badge {
-            font-size: 11px;
-            color: #888;
-            text-align: center;
-            margin-top: 6px;
-        }
-        .seguridad-badge span {
-            background: #f0f0f0;
-            border-radius: 4px;
-            padding: 2px 7px;
-            margin: 2px;
-            display: inline-block;
         }
     </style>
 </head>
@@ -61,7 +46,6 @@
         <div class="formulario">
             <h1>Regístrate</h1>
 
-            <!-- Campo: Correo -->
             <div class="input-contenedor">
                 <input class="input-text" type="text" id="correo"
                        placeholder="Usuario UNAL (sin @unal.edu.co)"
@@ -69,67 +53,52 @@
             </div>
             <p class="error-msg" id="error-correo"></p>
 
-            <!-- Campo: Contraseña -->
             <div class="input-contenedor">
                 <input class="input-text" type="password" id="password"
                        placeholder="Contraseña" maxlength="64" autocomplete="new-password">
             </div>
-            <p class="password-hint">Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo (p. ej. !@#$)</p>
+            <p class="password-hint">Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 símbolo (ej. !@#$)</p>
             <p class="error-msg" id="error-password"></p>
 
-            <!-- Campo: Confirmar contraseña -->
             <div class="input-contenedor">
                 <input class="input-text" type="password" id="password2"
                        placeholder="Confirmar contraseña" maxlength="64">
             </div>
             <p class="error-msg" id="error-password2"></p>
 
-            <!-- RNF 1: CAPTCHA -->
             <div class="captcha-contenedor">
                 <div class="g-recaptcha"
-                     data-sitekey="6LdWmv0sAAAAAFek5m48VWCggiTQG_uUd63Su-uv">
+                     data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI">
                 </div>
             </div>
             <p class="error-msg" id="error-captcha"></p>
 
-            <!-- Mensaje de éxito -->
             <p class="exito-msg" id="msg-exito"></p>
 
             <button class="button" id="btn-registrar" onclick="handleRegistro()">
                 Regístrate
             </button>
 
-            <!-- Indicadores de seguridad aplicados -->
-            <div class="seguridad-badge">
-                <span>🔒 SHA-256</span>
-                <span>🛡 Sanitización XSS</span>
-                <span>🤖 reCAPTCHA</span>
-            </div>
-
             <p>Al registrarte aceptas nuestras Condiciones de uso y Política de privacidad.</p>
             <p>¿Ya tienes cuenta? <a class="link" href="login.html">Iniciar sesión</a></p>
         </div>
     </div>
 
-    <!-- RNF 2, 3: Lógica de auth compartida -->
     <script src="javascript/auth.js"></script>
     <script>
         async function handleRegistro() {
-            // Limpiar errores previos
-            ['error-correo', 'error-password', 'error-password2', 'error-captcha', 'msg-exito']
-                .forEach(id => {
-                    const el = document.getElementById(id);
-                    el.style.display = 'none';
-                    el.textContent = '';
-                });
+            ['error-correo', 'error-password', 'error-password2', 'error-captcha', 'msg-exito'].forEach(id => {
+                const el = document.getElementById(id);
+                el.style.display = 'none';
+                el.textContent = '';
+            });
 
-            const correo   = document.getElementById('correo').value.trim();
-            const password = document.getElementById('password').value;
+            const correo    = document.getElementById('correo').value.trim();
+            const password  = document.getElementById('password').value;
             const password2 = document.getElementById('password2').value;
 
             let hayError = false;
 
-            // RNF 3: Validaciones del lado cliente
             if (!correo) {
                 mostrarError('error-correo', 'El correo es obligatorio.');
                 hayError = true;
@@ -160,7 +129,6 @@
 
             if (hayError) return;
 
-            // RNF 2 + 3: Registrar con hash y sanitización
             const btn = document.getElementById('btn-registrar');
             btn.disabled = true;
             btn.textContent = 'Registrando...';
@@ -175,7 +143,6 @@
                 const exito = document.getElementById('msg-exito');
                 exito.textContent = resultado.msg;
                 exito.style.display = 'block';
-                // Redirigir al login después de 2 segundos
                 setTimeout(() => { window.location.href = 'login.html'; }, 2000);
             } else {
                 mostrarError('error-correo', resultado.msg);

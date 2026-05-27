@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>La Segunda Guerra Mundial — Login</title>
+    <title>La Segunda Guerra Mundial — Iniciar sesión</title>
     <link rel="shortcut icon" href="img/union.png" type="image/x-icon" />
     <link href="css/Login_Registro.css" rel="stylesheet" type="text/css">
     <style>
@@ -36,24 +36,15 @@
             background: #fdf2f2;
             font-weight: bold;
         }
-        .intentos-msg {
-            color: #e67e22;
+        .aviso-redirect {
             font-size: 13px;
-            text-align: center;
-            margin: 5px 0;
-        }
-        .seguridad-badge {
-            font-size: 11px;
-            color: #888;
-            text-align: center;
-            margin-top: 6px;
-        }
-        .seguridad-badge span {
-            background: #f0f0f0;
-            border-radius: 4px;
-            padding: 2px 7px;
-            margin: 2px;
-            display: inline-block;
+            color: #555;
+            background: #fef9e7;
+            border: 1px solid #f0c040;
+            border-radius: 5px;
+            padding: 8px 12px;
+            margin: 0 10% 12px 10%;
+            display: none;
         }
         #contador-bloqueo {
             font-size: 18px;
@@ -70,13 +61,17 @@
         <div class="formulario">
             <h1>Iniciar sesión</h1>
 
+            <!-- Aviso cuando viene redirigido desde una página protegida -->
+            <p class="aviso-redirect" id="aviso-redirect">
+                🔒 Debes iniciar sesión para acceder al mapa interactivo.
+            </p>
+
             <!-- Aviso de bloqueo -->
             <div class="bloqueo-msg" id="msg-bloqueo">
                 🔒 Cuenta bloqueada.<br>
                 Intenta de nuevo en <span id="contador-bloqueo">120</span> segundos.
             </div>
 
-            <!-- Campo: Correo -->
             <div class="input-contenedor">
                 <input class="input-text" type="text" id="correo"
                        placeholder="Usuario UNAL (sin @unal.edu.co)"
@@ -84,60 +79,45 @@
             </div>
             <p class="error-msg" id="error-correo"></p>
 
-            <!-- Campo: Contraseña -->
             <div class="input-contenedor">
                 <input class="input-text" type="password" id="password"
                        placeholder="Contraseña" maxlength="64">
             </div>
             <p class="error-msg" id="error-password"></p>
 
-            <!-- Mensaje de error general / intentos -->
             <p class="error-msg" id="error-general"></p>
-
-            <!-- Mensaje de éxito -->
             <p class="exito-msg" id="msg-exito"></p>
 
             <button class="button" id="btn-login" onclick="handleLogin()">
                 Iniciar sesión
             </button>
 
-            <!-- Indicadores de seguridad -->
-            <div class="seguridad-badge">
-                <span>🔒 SHA-256</span>
-                <span>🛡 Sanitización XSS</span>
-                <span>⛔ Anti fuerza bruta</span>
-            </div>
-
             <p>Al iniciar sesión aceptas nuestras Condiciones de uso y Política de privacidad.</p>
             <p>¿No tienes cuenta? <a class="link" href="registro.html">Regístrate</a></p>
         </div>
     </div>
 
-    <!-- RNF 2, 3, 4: Lógica de auth compartida -->
     <script src="javascript/auth.js"></script>
     <script>
         let intervaloBloqueo = null;
 
-        // Verificar bloqueo al cargar la página
         window.addEventListener('load', function () {
+            // Mostrar aviso si viene redirigido desde página protegida
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('redirect')) {
+                document.getElementById('aviso-redirect').style.display = 'block';
+            }
             verificarEstadoBloqueo();
         });
 
         function verificarEstadoBloqueo() {
-            if (estaBloqueado()) {
-                mostrarPantallaBloqueo();
-            }
+            if (estaBloqueado()) mostrarPantallaBloqueo();
         }
 
         function mostrarPantallaBloqueo() {
-            const msgBloqueo = document.getElementById('msg-bloqueo');
-            const btn = document.getElementById('btn-login');
-            const inputs = document.querySelectorAll('.input-text');
-
-            msgBloqueo.style.display = 'block';
-            btn.disabled = true;
-            inputs.forEach(i => i.disabled = true);
-
+            document.getElementById('msg-bloqueo').style.display = 'block';
+            document.getElementById('btn-login').disabled = true;
+            document.querySelectorAll('.input-text').forEach(i => i.disabled = true);
             actualizarContador();
             if (intervaloBloqueo) clearInterval(intervaloBloqueo);
             intervaloBloqueo = setInterval(function () {
@@ -151,64 +131,53 @@
         }
 
         function actualizarContador() {
-            const seg = tiempoRestanteBloqueoBloqueado();
-            document.getElementById('contador-bloqueo').textContent = seg;
+            document.getElementById('contador-bloqueo').textContent = tiempoRestanteBloqueoBloqueado();
         }
 
         function desbloquearFormulario() {
-            const msgBloqueo = document.getElementById('msg-bloqueo');
-            const btn = document.getElementById('btn-login');
-            const inputs = document.querySelectorAll('.input-text');
-
-            msgBloqueo.style.display = 'none';
-            btn.disabled = false;
-            inputs.forEach(i => i.disabled = false);
+            document.getElementById('msg-bloqueo').style.display = 'none';
+            document.getElementById('btn-login').disabled = false;
+            document.querySelectorAll('.input-text').forEach(i => i.disabled = false);
         }
 
         async function handleLogin() {
-            // Limpiar mensajes previos
             ['error-correo', 'error-password', 'error-general', 'msg-exito'].forEach(id => {
                 const el = document.getElementById(id);
                 el.style.display = 'none';
                 el.textContent = '';
             });
 
-            // RNF 4: Verificar bloqueo antes de procesar
-            if (estaBloqueado()) {
-                mostrarPantallaBloqueo();
-                return;
-            }
+            if (estaBloqueado()) { mostrarPantallaBloqueo(); return; }
 
             const correo   = document.getElementById('correo').value.trim();
             const password = document.getElementById('password').value;
 
-            // RNF 3: Validación básica de campos vacíos
             let hayError = false;
-            if (!correo) {
-                mostrarError('error-correo', 'El correo es obligatorio.');
-                hayError = true;
-            }
-            if (!password) {
-                mostrarError('error-password', 'La contraseña es obligatoria.');
-                hayError = true;
-            }
+            if (!correo)    { mostrarError('error-correo',   'El correo es obligatorio.'); hayError = true; }
+            if (!password)  { mostrarError('error-password', 'La contraseña es obligatoria.'); hayError = true; }
             if (hayError) return;
 
             const btn = document.getElementById('btn-login');
             btn.disabled = true;
             btn.textContent = 'Verificando...';
 
-            // RNF 2 + 3 + 4: Login seguro
             const resultado = await loginUsuario(correo, password);
 
             btn.disabled = false;
             btn.textContent = 'Iniciar sesión';
 
             if (resultado.ok) {
+                // Guardar sesión activa
+                iniciarSesion(resultado.usuario.correo);
+
                 const exito = document.getElementById('msg-exito');
                 exito.textContent = '¡Bienvenido! Redirigiendo...';
                 exito.style.display = 'block';
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+
+                // Volver a la página desde donde vino, o al inicio
+                const params = new URLSearchParams(window.location.search);
+                const destino = params.get('redirect') || 'index.html';
+                setTimeout(() => { window.location.href = destino; }, 1500);
             } else if (resultado.bloqueado) {
                 mostrarPantallaBloqueo();
             } else {

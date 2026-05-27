@@ -11,7 +11,7 @@ function guardarUsuarios(usuarios) {
     localStorage.setItem(DB_KEY, JSON.stringify(usuarios));
 }
 
-// ── Hashing SHA-256 con Web Crypto API ────────────────────────────────
+// ── RNF 2: Hashing SHA-256 con Web Crypto API ────────────────────────────────
 
 async function hashSHA256(texto) {
     const encoder = new TextEncoder();
@@ -21,7 +21,7 @@ async function hashSHA256(texto) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// ── Validación y sanitización de entradas ────────────────────────────
+// ── RNF 3: Validación y sanitización de entradas ────────────────────────────
 
 function sanitizarTexto(texto) {
     // Elimina etiquetas HTML y caracteres peligrosos para prevenir XSS
@@ -62,7 +62,7 @@ function limpiarError(elementId) {
     }
 }
 
-// ── Bloqueo por intentos fallidos ────────────────────────────────────
+// ── RNF 4: Bloqueo por intentos fallidos ────────────────────────────────────
 
 const MAX_INTENTOS = 3;
 const BLOQUEO_MS   = 2 * 60 * 1000; // 2 minutos
@@ -169,4 +169,36 @@ async function loginUsuario(correo, password) {
 
     resetearIntentos();
     return { ok: true, msg: '¡Inicio de sesión exitoso!', usuario };
+}
+
+// ── Gestión de sesión ─────────────────────────────────────────────────────────
+
+const SESION_KEY = 'sesion_activa';
+
+function iniciarSesion(correo) {
+    const sesion = {
+        correo: correo,
+        timestamp: new Date().toISOString()
+    };
+    localStorage.setItem(SESION_KEY, JSON.stringify(sesion));
+}
+
+function cerrarSesion() {
+    localStorage.removeItem(SESION_KEY);
+}
+
+function obtenerSesion() {
+    const datos = localStorage.getItem(SESION_KEY);
+    return datos ? JSON.parse(datos) : null;
+}
+
+function estaAutenticado() {
+    return obtenerSesion() !== null;
+}
+
+// Protege una página: si no hay sesión activa, redirige al login
+function requiereAutenticacion() {
+    if (!estaAutenticado()) {
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    }
 }
